@@ -17,7 +17,7 @@ export const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.create({
-            name: username, 
+            name: name,
             password: hashedPassword,
             email
         });
@@ -39,23 +39,30 @@ export const register = async (req, res) => {
     }
 };
 export const login = async (req, res) => {
-    const {email, password } = req.body
-    const user = await User.findOne({email});
-    if (!user) {
-        return res.send({message: "Invalid email or password"})
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+        const token = await genToken(user._id);
+        res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 10 * 24 * 60 * 60 * 1000,
+            sameSite: "strict",
+            secure: false
+        });
+        // Exclude password from user object
+        const { password: _pw, ...userWithoutPassword } = user.toObject();
+        return res.status(200).json(userWithoutPassword);
+    } catch (error) {
+        console.error("Login error:", error);
+        return res.status(500).json({ message: "Login error" });
     }
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-    if (!isPasswordValid) {
-        return res.json({message: "Invalid email or password"})
-    }
-    const token = await genToken(user._id)
-    res.cookie("token", token, {
-        httpOnly: true,
-        maxAge: 10 * 24 * 60 * 60 * 1000,
-        sameSite: "strict",
-        secure: false
-    })
-    return res.status(200).json({message: "Login successful"})
 };
 export const logout = async (req, res) => {
     try {

@@ -2,10 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { userDataContext } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import aiImg from "../assets/ai.gif"
 import { CgMenuRight } from "react-icons/cg";
 import { RxCross1 } from "react-icons/rx";
-import userImg from "../assets/user.gif"
 function Home() {
   const {userData,serverUrl,setUserData,getGeminiResponse}=useContext(userDataContext)
   const navigate=useNavigate()
@@ -220,8 +218,8 @@ useEffect(() => {
 <img src={userData?.assistantImage} alt="" className='h-full object-cover'/>
       </div>
       <h1 className='text-white text-[18px] font-semibold'>I'm {userData?.assistantName}</h1>
-      {!aiText && <img src={userImg} alt="" className='w-[200px]'/>}
-      {aiText && <img src={aiImg} alt="" className='w-[200px]'/>}
+      {!aiText && <div className='w-[200px] h-[200px] bg-gray-500 rounded-full'></div>}
+      {aiText && <div className='w-[200px] h-[200px] bg-blue-500 rounded-full'></div>}
     
     <h1 className='text-white text-[18px] font-semibold text-wrap'>{userText?userText:aiText?aiText:null}</h1>
       
