@@ -18,7 +18,24 @@ export const getCurrentUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const userId = req.userId;
-        const updates = req.body;
+        const { assistantName, imageUrl } = req.body;
+        
+        const updates = {};
+        
+        // Update assistant name if provided
+        if (assistantName) {
+            updates.assistantName = assistantName;
+        }
+        
+        // Handle image upload or URL
+        if (req.file) {
+            // If file was uploaded, save the file path
+            updates.assistantImage = req.file.filename;
+        } else if (imageUrl) {
+            // If predefined image was selected
+            updates.assistantImage = imageUrl;
+        }
+        
         const user = await User.findByIdAndUpdate(userId, updates, { new: true }).select('-password');
         if (!user) {
             return res.status(404).json({ message: "User not found" });

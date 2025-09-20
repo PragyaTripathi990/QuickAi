@@ -29,8 +29,14 @@ try {
     useEffect(()=>{
 handleCurrentUser()
     },[])
+    const resetImageSelection = () => {
+        setSelectedImage(null)
+        setFrontendImage(null)
+        setBackendImage(null)
+    }
+
     const value={
-serverUrl,userData,setUserData,backendImage,setBackendImage,frontendImage,setFrontendImage,selectedImage,setSelectedImage,getGeminiResponse
+serverUrl,userData,setUserData,backendImage,setBackendImage,frontendImage,setFrontendImage,selectedImage,setSelectedImage,getGeminiResponse,resetImageSelection
     }
   return (
     <div>

@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 // isAuth checks if the request has a valid JWT token in cookies.
 // Register/Login/Logout = making and giving someone a ticket.
 
@@ -10,7 +11,7 @@ const isAuth = async(req, res, next) => {
         if (!token) {
             return res.status(400).json({message : "Unauthorized"})
         }
-        const verifiedToken = await jwt.verifiedToken(token, process.env.JWT_SECRET);
+        const verifiedToken = await jwt.verify(token, process.env.JWT_SECRET);
         req.userId = verifiedToken.userId;
 
         // Think of isAuth like a security guard at the entrance of multiple rooms in a building:

@@ -7,19 +7,30 @@ import userRouter from './routes/user.routes.js';
 import authRouter from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import geminiResponse from './gemini.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors({
-    origin: 'http://localhost:5175',
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
     credentials: true
 }));
 app.use(express.json());
+app.use(cookieParser());
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.get('/', (req, res) => {
     res.send('server is LIVE');
 })
-const PORT = process.env.PORT || 3000;
-app.use(express.json());
-app.use(cookieParser());
+
+const PORT = process.env.PORT || 8000;
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 app.get('/', async (req, res) => {
