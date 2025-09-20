@@ -19,10 +19,16 @@ function UserContext({children}) {
 
     const getGeminiResponse=async (command)=>{
 try {
+  console.log("Making API call to:", `${serverUrl}/api/user/asktoassistant`);
+  console.log("Command being sent:", command);
   const result=await axios.post(`${serverUrl}/api/user/asktoassistant`,{command},{withCredentials:true})
+  console.log("API Response received:", result.data);
   return result.data
 } catch (error) {
-  console.log(error)
+  console.error("API Error:", error);
+  console.error("Error response:", error.response?.data);
+  console.error("Error status:", error.response?.status);
+  throw error; // Re-throw so the calling code can handle it
 }
     }
 
