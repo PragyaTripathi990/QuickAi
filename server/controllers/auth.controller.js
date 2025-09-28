@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import User from '../modles/user.model.js';
 import genToken from '../config/token.js';
 
+
 export const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -31,12 +32,13 @@ export const register = async (req, res) => {
             sameSite: "strict",
             secure: false
         });
-        // This tells the frontend signup succeeded. 201 = "Created".
-        return res.status(201).json(user);
+        // Exclude password before sending to client
+        const { password: _pw, ...userWithoutPassword } = user.toObject();
+        return res.status(201).json(userWithoutPassword);
 
     } catch (errors) {
         console.error("Sign up error:", errors);
-        return res.status(500).json({ message: "login error" });
+        return res.status(500).json({ message: "Sign up error" });
     }
 };
 export const login = async (req, res) => {
